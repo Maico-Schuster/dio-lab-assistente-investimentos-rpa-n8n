@@ -1,0 +1,194 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "Clientes",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        -704,
+        -32
+      ],
+      "id": "47e15b34-7fa3-4bef-9c45-e7d89f05b653",
+      "name": "Webhook",
+      "webhookId": "c25c3052-8165-40ed-ad5b-bd06f00faaa2"
+    },
+    {
+      "parameters": {
+        "url": "https://digitalinnovationone.github.io/dio-lab-assistente-investimentos-rpa-n8n/data.csv",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -352,
+        64
+      ],
+      "id": "38ab5423-1cca-4e83-868d-db49ccf5a977",
+      "name": "HTTP Request",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "a309e865-fd0a-4769-8b87-1ee82f81360d",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "perfil",
+              "field2": "perfil"
+            }
+          ]
+        },
+        "options": {
+          "multipleMatches": "first"
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        128,
+        -160
+      ],
+      "id": "b1ce32f4-96d2-48cd-bed3-d82fd299d1c4",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body.clientes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -176
+      ],
+      "id": "79b164ac-e7e1-4574-896f-1ad36eff20b4",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6cd37f60-6a1f-4b73-a2a9-83beeb3403b3",
+              "name": "=mensagem",
+              "value": "={{ $json.perfil === 'Conservador' ? 'Olá, ' + $json.nome + '! Com seu saldo de ' + $json.saldo + ', a opção mais segura para você é ' + $json.produto + ', com rentabilidade de ' + $json.rentabilidade + '. Foco em renda fixa e segurança.' : $json.perfil === 'Moderado' ? 'Olá, ' + $json.nome + '! Com seu saldo de ' + $json.saldo + ', uma boa opção para você é ' + $json.produto + ' (' + $json.rentabilidade + '), equilibrando renda fixa e variável.' : 'Olá, ' + $json.nome + '! Com seu saldo de ' + $json.saldo + ', pensamos em ' + $json.produto + ' (rentabilidade ' + $json.rentabilidade + '), com ênfase em ações e maior potencial de retorno.' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        288,
+        -48
+      ],
+      "id": "d42de344-fe8c-4587-b850-4338c34d7ed8",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c625f2a1-58ce-4679-b7e1-0ab164608fa8",
+  "meta": {
+    "instanceId": "a536fab70128bdf3f5ab0102f4454ad3d9a54c43955101ad56b43437464df455"
+  },
+  "nodeGroups": [],
+  "id": "A8g49B85EgcYB7lQ",
+  "tags": []
+}
